@@ -3,36 +3,39 @@ import * as vscode from "vscode";
 const cats = {
   "Coding Cat": "https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif",
   "Compiling Cat": "https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif",
+  "Testing Cat": "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
 };
 
 export function activate(context: vscode.ExtensionContext) {
+  // Track currently webview panel
+  let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
   let disposable = vscode.commands.registerCommand("catCoding.start", () => {
-    // Create and show a new webview
-
     const panel = vscode.window.createWebviewPanel(
-      "catCoding", // Identifies the type of the webview. Used internally
-      "Cat Coding", // Title of the panel displayed to the user
-      vscode.ViewColumn.One, // Editor column to show the new webview panel in.
-      {} // Webview options. More on these later.
+      "catCoding",
+      "Cat Coding",
+      vscode.ViewColumn.One,
+      {}
     );
+    panel.webview.html = getWebviewContent("Coding Cat");
 
-    let iteration = 0;
-    const updateWebview = () => {
-      const cat = iteration++ % 2 ? "Compiling Cat" : "Coding Cat";
-      panel.title = cat;
-      panel.webview.html = getWebviewContent(cat);
-    };
+    // Update contents based on view state changes
+    panel.onDidChangeViewState(
+      (e) => {
+        const panel = e.webviewPanel;
+        switch (panel.viewColumn) {
+          case vscode.ViewColumn.One:
+            updateWebviewForCat(panel, "Coding Cat");
+            return;
 
-    // Set initial content
-    updateWebview();
+          case vscode.ViewColumn.Two:
+            updateWebviewForCat(panel, "Compiling Cat");
+            return;
 
-    // And schedule updates to the content every second
-    const interval = setInterval(updateWebview, 1000);
-
-    panel.onDidDispose(
-      () => {
-        // When the panel is closed, cancel any future updates to the webview content
-        clearInterval(interval);
+          case vscode.ViewColumn.Three:
+            updateWebviewForCat(panel, "Testing Cat");
+            return;
+        }
       },
       null,
       context.subscriptions
@@ -43,6 +46,14 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {}
+
+function updateWebviewForCat(
+  panel: vscode.WebviewPanel,
+  catName: keyof typeof cats
+) {
+  panel.title = catName;
+  panel.webview.html = getWebviewContent(catName);
+}
 
 function getWebviewContent(cat: keyof typeof cats) {
   return `<!DOCTYPE html>
