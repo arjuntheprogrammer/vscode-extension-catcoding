@@ -9,14 +9,13 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:catcodingvscode.helloWorld"
-	],
+	"activationEvents": ["onCommand:catCoding.start"],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [{
-			"command": "catcodingvscode.helloWorld",
-			"title": "Hello World"
+			"command": "catCoding.start",
+			"title": "Start new cat coding session",
+			"category": "Cat Coding"
 		}]
 	},
 	"scripts": {
