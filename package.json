@@ -9,14 +9,24 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": ["onCommand:catCoding.start"],
+	"activationEvents": [
+		"onCommand:catCoding.start",
+		"onWebviewPanel:catCoding"
+	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [{
-			"command": "catCoding.start",
-			"title": "Start new cat coding session",
-			"category": "Cat Coding"
-		}]
+				"command": "catCoding.start",
+				"title": "Start new cat coding session",
+				"category": "Cat Coding"
+			},
+
+			{
+				"command": "catCoding.doRefactor",
+				"title": "Cat to Refactor code",
+				"category": "Cat Coding"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
